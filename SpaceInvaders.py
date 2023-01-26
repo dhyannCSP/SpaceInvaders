@@ -138,7 +138,7 @@ class Bullets(pygame.sprite.Sprite):
 			explosion = Explosion(self.rect.centerx, self.rect.centery, 2)
 			explosion_group.add(explosion)
 
-
+#Create Shield class
 class Shield(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -148,6 +148,7 @@ class Shield(pygame.sprite.Sprite):
         self.rect.center = [x + 100, y]
         self.health = 4
 
+    #Update shield when hit
     def update(self):
         if pygame.sprite.spritecollide(self, alien_bullet_group, True):
             self.health -= 1
@@ -158,6 +159,7 @@ class Shield(pygame.sprite.Sprite):
             pygame.draw.rect(self.image, (0, 0, 0), (0, 0, self.image.get_width(), self.image.get_height()))
             pygame.draw.rect(self.image, (0, 255, 60 * (4 - self.health)), (0, 0, self.image.get_width(), self.image.get_height()))
 
+        #Remove shield if it has below 0 health
         if self.health <= 0:
             self.kill()
 
