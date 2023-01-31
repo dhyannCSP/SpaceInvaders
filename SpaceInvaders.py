@@ -1,7 +1,7 @@
-#Name: Dhyan Narayanan CSP #113
-#Program: Space Invaders PyGame
-#Date: 01/25/23
-#Description: Creates a Space Invader game that takes in input of arrow keys and has shields. 
+#Name: Dhyan Narayanan #113 CSP-1
+#Date: 01/19/2023
+#Assignment: Space Invaders Game
+
 
 import pygame
 from pygame import mixer
@@ -17,11 +17,10 @@ pygame.init()
 clock = pygame.time.Clock()
 fps = 60
 
-#defines screen size
+
 screen_width = 600
 screen_height = 800
 
-#creates screen with window title
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Space Invanders')
 
@@ -45,7 +44,7 @@ laser_fx.set_volume(0.25)
 #define game variables
 rows = 5
 cols = 5
-alien_cooldown = 1000#bullet cooldown in milliseconds
+alien_cooldown = 500#bullet cooldown in milliseconds
 last_alien_shot = pygame.time.get_ticks()
 countdown = 3
 last_count = pygame.time.get_ticks()
@@ -61,7 +60,6 @@ white = (255, 255, 255)
 #load image
 bg = pygame.image.load("SpaceInvadersImg/bg.png")
 
-#draw background
 def draw_bg():
 	screen.blit(bg, (0, 0))
 
@@ -145,7 +143,7 @@ class Bullets(pygame.sprite.Sprite):
 			explosion = Explosion(self.rect.centerx, self.rect.centery, 2)
 			explosion_group.add(explosion)
 
-#Create Shield class
+
 class Shield(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -155,10 +153,19 @@ class Shield(pygame.sprite.Sprite):
         self.rect.center = [x + 100, y]
         self.health = 4
 
-    #Update shield when hit
     def update(self):
-		#When the bullet sprite hits the 
-        if pygame.sprite.spritecollide(self, alien_bullet_group,True):
+		#If alien bullet hits shield then update
+        if pygame.sprite.spritecollide(self, alien_bullet_group, True):
+            self.health -= 1
+            explosion_fx.play()
+            explosion = Explosion(self.rect.centerx, self.rect.centery, 2)
+            explosion_group.add(explosion)
+			# change the shield color to signify that it has been hit
+            pygame.draw.rect(self.image, (0, 0, 0), (0, 0, self.image.get_width(), self.image.get_height()))
+            pygame.draw.rect(self.image, (0, 255, 60 * (4 - self.health)), (0, 0, self.image.get_width(), self.image.get_height()))
+
+		#If player bullet hits shield then update	
+        elif pygame.sprite.spritecollide(self, bullet_group, True):
             self.health -= 1
             explosion_fx.play()
             explosion = Explosion(self.rect.centerx, self.rect.centery, 2)
@@ -167,7 +174,6 @@ class Shield(pygame.sprite.Sprite):
             pygame.draw.rect(self.image, (0, 0, 0), (0, 0, self.image.get_width(), self.image.get_height()))
             pygame.draw.rect(self.image, (0, 255, 60 * (4 - self.health)), (0, 0, self.image.get_width(), self.image.get_height()))
 
-        #Remove shield if it has below 0 health
         if self.health <= 0:
             self.kill()
 
@@ -180,7 +186,7 @@ class Aliens(pygame.sprite.Sprite):
 		self.rect.center = [x, y]
 		self.move_counter = 0
 		self.move_direction = 1
-	#update sprite when moving
+
 	def update(self):
 		self.rect.x += self.move_direction
 		self.move_counter += 1
